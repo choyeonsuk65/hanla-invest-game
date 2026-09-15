@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>경제마스터스 LIVE - 100만원 투자 생존게임</title>
+<style>
+:root {
+  --bg:#0f172a; --panel:#111c34; --panel2:#172554; --text:#eef6ff;
+  --muted:#a8b4ca; --up:#ff5f6d; --down:#48a7ff; --good:#3ddc97;
+  --warn:#ffd166; --danger:#ff6b6b; --accent:#7c5cff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:linear-gradient(180deg,#0b1120,#111a2f);color:var(--text);
+font-family:"Pretendard","Noto Sans KR","Malgun Gothic",sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.wrap{max-width:760px;margin:0 auto;padding:14px 14px 36px}
+.header{position:sticky;top:0;z-index:30;margin:0 -14px 10px;padding:10px 14px;background:rgba(9,15,29,.94);
+backdrop-filter:blur(10px);border-bottom:1px solid #24324e;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.logo{font-weight:900;font-size:18px;letter-spacing:-.3px}
+.headerBtns{display:flex;gap:6px}
+.iconbtn{border:1px solid #34435f;background:#172238;color:#fff;border-radius:12px;padding:8px 10px;font-weight:800}
+.screen{display:none} .screen.active{display:block}
+.hero{text-align:center;padding:28px 10px 12px}
+.hero .emoji{font-size:56px}
+.hero h1{font-size:clamp(34px,8vw,56px);line-height:1.04;margin:8px 0 8px;letter-spacing:-1.5px}
+.hero h1 span{color:#8ab4ff}
+.hero p{color:#c9d5e8;font-size:18px;line-height:1.5;margin:10px auto;max-width:620px}
+.cardbox{background:linear-gradient(145deg,#151f37,#11192e);border:1px solid #293753;border-radius:22px;padding:16px;margin:14px 0;
+box-shadow:0 14px 40px #0005}
+.label{color:#9fb0c9;font-size:13px;font-weight:800;margin-bottom:7px}
+.input{width:100%;border:1px solid #3c4c69;background:#0f1829;color:white;border-radius:14px;padding:14px;font-size:18px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choicebtn{border:1px solid #3a4b6b;background:#172238;color:#eef6ff;border-radius:16px;padding:14px 10px;font-weight:900}
+.choicebtn.active{border-color:#8ab4ff;background:#243b6a;box-shadow:0 0 0 2px #8ab4ff33 inset}
+.primary{width:100%;border:0;border-radius:18px;padding:16px;background:linear-gradient(90deg,#6d5dfc,#4397ff);color:white;
+font-weight:900;font-size:20px;box-shadow:0 8px 0 #3046a8;margin-top:12px}
+.primary:active{transform:translateY(4px);box-shadow:0 4px 0 #3046a8}
+.note{font-size:13px;color:#93a4bd;line-height:1.5}
+.badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+.badge{font-size:13px;background:#172238;border:1px solid #324360;border-radius:999px;padding:7px 10px;color:#cfe0f8;font-weight:800}
+.topstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 10px}
+.stat{background:#111c34;border:1px solid #283955;border-radius:16px;padding:10px;text-align:center}
+.stat .k{color:#8fa3bf;font-size:12px} .stat .v{font-size:18px;font-weight:900;margin-top:2px}
+.event{border:1px solid #3e4e6c;background:linear-gradient(135deg,#1a2741,#1a2141);border-radius:22px;padding:16px;margin:10px 0}
+.event .tag{display:inline-block;background:#ffca3a;color:#382b00;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:900}
+.event h2{font-size:22px;line-height:1.25;margin:10px 0 6px}
+.event p{color:#b8c6d9;margin:0;font-size:14px}
+.timerWrap{margin:12px 0}
+.timerRow{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.timer{font-size:32px;font-weight:1000;color:#ffe37a}
+.bar{height:12px;background:#23304a;border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#50d890,#ffd166,#ff6b6b);transition:width .25s linear}
+.market{display:grid;gap:9px;margin:10px 0}
+.stock{background:#111c34;border:1px solid #2a3b5a;border-radius:18px;padding:12px}
+.stockHead{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.stockName{font-size:18px;font-weight:1000}
+.price{font-size:18px;font-weight:1000}
+.change{font-size:13px;font-weight:900;margin-left:6px}
+.up{color:#ff6b7b} .down{color:#59b0ff} .flat{color:#b9c6d9}
+.hold{color:#a6b6cc;font-size:13px;margin-top:3px}
+.trade{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px}
+.trade button{border:0;border-radius:12px;padding:10px 13px;font-weight:1000;color:white}
+.sell{background:#31415f} .buy{background:#6557df}
+.qty{min-width:86px;text-align:center;font-weight:900}
+.cashHint{color:#9fb0c9;font-size:12px;margin-top:7px}
+.tokenBox{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#191d36;border:1px solid #403f75;border-radius:16px;padding:10px;margin:10px 0}
+.tokenBtn{border:0;border-radius:12px;padding:10px 12px;background:#5b4bd8;color:#fff;font-weight:900}
+.tokenBtn:disabled{opacity:.35}
+.commit{width:100%;border:0;border-radius:18px;padding:15px;background:#20b486;color:#071a15;font-weight:1000;font-size:19px;margin:10px 0}
+.commit:disabled{opacity:.4}
+.revealGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.resultCard{background:#111c34;border:1px solid #2a3b5a;border-radius:16px;padding:11px}
+.resultCard .name{font-weight:1000} .resultCard .nums{font-size:13px;color:#a8b4c8;margin-top:4px;line-height:1.5}
+.pnl{font-size:20px;font-weight:1000;margin-top:5px}
+.bigPnl{text-align:center;padding:16px;border-radius:20px;margin:10px 0;font-size:28px;font-weight:1000}
+.bigPnl.good{background:#123b30;color:#5ff0b2;border:1px solid #267b61}
+.bigPnl.bad{background:#3b1b26;color:#ff8b9d;border:1px solid #8a3348}
+.next{width:100%;border:0;border-radius:18px;padding:15px;background:#3578e5;color:white;font-size:18px;font-weight:1000;margin-top:10px}
+.mission{background:linear-gradient(145deg,#2a204e,#152444);border:1px solid #554f8b;border-radius:22px;padding:17px}
+.mission h2{margin:5px 0 12px;font-size:23px}
+.opt{width:100%;border:1px solid #3a4b6b;background:#14213a;color:white;border-radius:15px;padding:13px;margin:6px 0;text-align:left;font-weight:900}
+.opt.correct{background:#154936;border-color:#3ddc97} .opt.wrong{background:#4a1d2a;border-color:#ff6b6b}
+.explain{margin-top:10px;color:#c9d8ee;line-height:1.55}
+.finalHero{text-align:center;padding:20px 5px 10px}
+.finalHero .trophy{font-size:64px}
+.finalHero h2{font-size:32px;margin:6px}
+.asset{font-size:42px;font-weight:1000;color:#ffe169;margin:8px}
+.summaryGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.sum{background:#111c34;border:1px solid #2a3b5a;border-radius:16px;padding:12px}
+.sum .k{color:#96a7c0;font-size:12px} .sum .v{font-weight:1000;font-size:18px;margin-top:4px}
+.styleBadge{background:linear-gradient(90deg,#5544d9,#267ed0);border-radius:18px;padding:16px;text-align:center;margin:12px 0;font-size:20px;font-weight:1000}
+.shareBtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.shareBtns button{border:1px solid #3a4b6b;background:#172238;color:#fff;border-radius:14px;padding:12px;font-weight:900}
+.reflection{background:#18223b;border:1px solid #31415e;border-radius:18px;padding:14px;margin-top:12px;color:#cdd9eb;line-height:1.55}
+.modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;padding:18px;z-index:99}
+.modal.show{display:flex} .modalBox{max-width:520px;width:100%;background:#121c32;border:1px solid #344765;border-radius:22px;padding:18px}
+.close{float:right;border:0;background:#263650;color:#fff;border-radius:10px;padding:7px 10px}
+canvas{display:none}
+@media(max-width:430px){.row{grid-template-columns:1fr} .revealGrid{grid-template-columns:1fr} .summaryGrid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="logo">📈 경제마스터스 LIVE</div>
+    <div class="headerBtns">
+      <button class="iconbtn" id="soundToggle" onclick="toggleSound()">🔊 ON</button>
+      <button class="iconbtn" onclick="testSound()">🎵 소리테스트</button>
+      <button class="iconbtn" onclick="openHelp()">?</button>
+    </div>
+  </div>
+
+  <section id="start" class="screen active">
+    <div class="hero">
+      <div class="emoji">💸📊🎯</div>
+      <h1><span>100만원</span><br>투자 생존게임</h1>
+      <p>뉴스를 읽고 투자하고, 가격이 바뀌면 손익을 바로 확인하세요.<br><b>정답이 없는 경제 선택게임</b>입니다.</p>
+    </div>
+    <div class="badges">
+      <span class="badge">⏱ 투자 타이머</span><span class="badge">📉 자동 손익계산</span>
+      <span class="badge">🧠 경제미션</span><span class="badge">🛡 분산투자</span>
+    </div>
+    <div class="cardbox">
+      <div class="label">닉네임 또는 팀명</div>
+      <input id="nickname" class="input" maxlength="12" placeholder="예: 한라불곰">
+      <div class="label" style="margin-top:14px">게임 모드</div>
+      <div class="row">
+        <button id="mode8" class="choicebtn active" onclick="setMode(8)">수업용 8라운드<br><small>추천 · 약 15~20분</small></button>
+        <button id="mode15" class="choicebtn" onclick="setMode(15)">전체 15라운드<br><small>16장 모두 사용</small></button>
+      </div>
+      <div class="label" style="margin-top:14px">투자 제한시간</div>
+      <div class="row">
+        <button id="t25" class="choicebtn active" onclick="setTime(25)">25초</button>
+        <button id="t35" class="choicebtn" onclick="setTime(35)">35초</button>
+      </div>
+      <button class="primary" onclick="startGame()">시장 입장하기 ▶</button>
+      <p class="note">※ 교육용 가상시장입니다. 실제 종목 추천·실제 투자와 무관합니다. 시작자산은 1,000,000원입니다.<br>※ 휴대폰 브라우저는 처음 한 번 터치해야 소리가 허용됩니다. 시작 전에 상단의 <b>🎵 소리테스트</b>를 눌러 확인하세요.</p>
+    </div>
+  </section>
+
+  <section id="play" class="screen">
+    <div class="topstats">
+      <div class="stat"><div class="k">라운드</div><div class="v" id="roundStat">1/8</div></div>
+      <div class="stat"><div class="k">현금</div><div class="v" id="cashStat">₩0</div></div>
+      <div class="stat"><div class="k">총자산</div><div class="v" id="assetStat">₩0</div></div>
+    </div>
+    <div class="event">
+      <span class="tag">📢 MARKET NEWS</span>
+      <h2 id="eventTitle">시장 뉴스</h2>
+      <p>뉴스를 읽고 어떤 업종이 영향을 받을지 생각한 뒤 거래하세요.</p>
+    </div>
+    <div class="timerWrap">
+      <div class="timerRow"><b>투자 시간</b><div class="timer" id="timer">25</div></div>
+      <div class="bar"><i id="timerBar"></i></div>
+    </div>
+    <div class="tokenBox">
+      <div><b>🔍 분석토큰 <span id="tokenCount">2</span>개</b><div class="note">한 종목의 다음 방향(▲/▼/―)을 미리 확인</div></div>
+      <button id="tokenBtn" class="tokenBtn" onclick="useToken()">토큰 사용</button>
+    </div>
+    <div id="market" class="market"></div>
+    <button id="commitBtn" class="commit" onclick="commitRound()">거래 완료 · 시장 마감</button>
+  </section>
+
+  <section id="reveal" class="screen">
+    <div class="event">
+      <span class="tag">🔔 시장 마감</span>
+      <h2 id="revealEvent"></h2>
+      <p>내가 가진 주식이 얼마나 오르거나 내렸는지 확인합니다.</p>
+    </div>
+    <div id="bigPnl" class="bigPnl"></div>
+    <div id="revealGrid" class="revealGrid"></div>
+    <div class="cardbox">
+      <div class="topstats">
+        <div class="stat"><div class="k">현재 총자산</div><div class="v" id="afterAsset"></div></div>
+        <div class="stat"><div class="k">누적 손익</div><div class="v" id="cumPnl"></div></div>
+        <div class="stat"><div class="k">수익률</div><div class="v" id="returnPct"></div></div>
+      </div>
+      <div id="specialMsg" class="note"></div>
+    </div>
+    <button class="next" onclick="afterReveal()">다음 라운드 ▶</button>
+  </section>
+
+  <section id="mission" class="screen">
+    <div class="mission">
+      <div class="tag" style="display:inline-block;background:#9f7aea;color:#fff;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:900">🧠 경제 미션</div>
+      <h2 id="missionQ"></h2>
+      <div id="missionOpts"></div>
+      <div id="missionEx" class="explain"></div>
+      <button id="missionNext" class="next" style="display:none" onclick="missionDone()">게임 계속 ▶</button>
+    </div>
+  </section>
+
+  <section id="final" class="screen">
+    <div class="finalHero">
+      <div class="trophy">🏆</div>
+      <h2 id="finalName">투자 생존 완료!</h2>
+      <div class="asset" id="finalAsset"></div>
+      <div id="finalPnl"></div>
+    </div>
+    <div class="styleBadge" id="styleBadge"></div>
+    <div class="summaryGrid">
+      <div class="sum"><div class="k">최종 수익률</div><div class="v" id="sumReturn"></div></div>
+      <div class="sum"><div class="k">경제미션</div><div class="v" id="sumQuiz"></div></div>
+      <div class="sum"><div class="k">최대 집중도</div><div class="v" id="sumConcentration"></div></div>
+      <div class="sum"><div class="k">거래 횟수</div><div class="v" id="sumTrades"></div></div>
+    </div>
+    <div class="reflection">
+      <b>💬 패들렛에 올릴 한 줄</b><br>
+      “내가 가장 잘한 선택 또는 아쉬운 선택은 무엇이었나요?”<br>
+      결과 카드와 함께 이유를 1문장으로 적으면 1교시 결과물이 됩니다.
+    </div>
+    <div class="shareBtns">
+      <button onclick="copyResult()">📋 결과문구 복사</button>
+      <button onclick="downloadCard()">🖼 결과카드 저장</button>
+      <button onclick="shareResult()">📤 공유하기</button>
+      <button onclick="restart()">↻ 다시 도전</button>
+    </div>
+    <canvas id="resultCanvas" width="1080" height="1350"></canvas>
+  </section>
+</div>
+
+<div id="helpModal" class="modal" onclick="if(event.target===this)closeHelp()">
+  <div class="modalBox">
+    <button class="close" onclick="closeHelp()">닫기</button>
+    <h2>게임 방법</h2>
+    <ol style="line-height:1.7;color:#cdd9eb;padding-left:22px">
+      <li>현재 주가를 보고 사고 싶은 종목을 매수합니다.</li>
+      <li>보유 종목은 매도할 수 있습니다.</li>
+      <li>타이머가 끝나거나 ‘거래 완료’를 누르면 다음 시장카드가 공개됩니다.</li>
+      <li>손익은 자동으로 계산됩니다.</li>
+      <li>🔍 분석토큰은 다음 가격의 방향만 알려줍니다.</li>
+      <li>마지막 결과카드를 패들렛에 올려 친구들과 비교해 보세요.</li>
+      <li><b>소리가 안 나면</b> 화면을 한 번 터치한 뒤 상단의 <b>🎵 소리테스트</b>를 눌러 주세요.</li>
+    </ol>
+    <p class="note">핵심: 많이 버는 것만이 목표가 아니라, 뉴스와 위험을 보고 자신의 선택 이유를 설명하는 것이 목표입니다.</p>
+  </div>
+</div>
+
+<script>
+const STOCKS=["전자", "식품", "건설", "제약", "엔터테인"];
+const CARDS=[{"n": 1, "event": "경기 호황! 소비와 투자가 살아난다", "prices": {"전자": 110000, "식품": 160000, "건설": 50000, "제약": 110000, "엔터테인": 100000}}, {"n": 2, "event": "감염병 확산! 업종별 희비가 갈린다", "prices": {"전자": 90000, "식품": 120000, "건설": 40000, "제약": 200000, "엔터테인": 60000}}, {"n": 3, "event": "생활경제 회복 신호! 시장이 다시 움직인다", "prices": {"전자": 100000, "식품": 150000, "건설": 40000, "제약": 210000, "엔터테인": 60000}}, {"n": 4, "event": "공연·여가 재개! 엔터테인먼트가 주목받는다", "prices": {"전자": 100000, "식품": 170000, "건설": 60000, "제약": 180000, "엔터테인": 120000}}, {"n": 5, "event": "소비 회복 지속! 업종별 속도는 다르다", "prices": {"전자": 100000, "식품": 160000, "건설": 70000, "제약": 180000, "엔터테인": 140000}}, {"n": 6, "event": "신형 스마트폰 대박! 전자업종에 관심 집중", "prices": {"전자": 140000, "식품": 170000, "건설": 60000, "제약": 180000, "엔터테인": 150000}}, {"n": 7, "event": "대형 인프라 투자 발표! 건설업종이 들썩인다", "prices": {"전자": 150000, "식품": 170000, "건설": 100000, "제약": 170000, "엔터테인": 150000}}, {"n": 8, "event": "국제 분쟁 발생! 불안감에 시장이 흔들린다", "prices": {"전자": 110000, "식품": 120000, "건설": 90000, "제약": 160000, "엔터테인": 130000}}, {"n": 9, "event": "국제유가 급등! 기업 비용 부담이 커진다", "prices": {"전자": 80000, "식품": 120000, "건설": 80000, "제약": 150000, "엔터테인": 130000}}, {"n": 10, "event": "건설사 부도·상장폐지! 위험은 현실이 된다", "prices": {"전자": 100000, "식품": 110000, "건설": null, "제약": 160000, "엔터테인": 160000}}, {"n": 11, "event": "경기 침체 속 업종별 방어력 차이", "prices": {"전자": 110000, "식품": 140000, "건설": 70000, "제약": 170000, "엔터테인": 170000}}, {"n": 12, "event": "시장 관망세! 오르는 종목과 내리는 종목이 섞인다", "prices": {"전자": 110000, "식품": 140000, "건설": 60000, "제약": 190000, "엔터테인": 150000}}, {"n": 13, "event": "미국 증시 호황! 투자심리가 살아난다", "prices": {"전자": 130000, "식품": 180000, "건설": 80000, "제약": 190000, "엔터테인": 170000}}, {"n": 14, "event": "K-푸드 열풍! 식품업종에 강한 수요", "prices": {"전자": 150000, "식품": 240000, "건설": 80000, "제약": 180000, "엔터테인": 190000}}, {"n": 15, "event": "차익실현! 시장이 다시 혼조세로", "prices": {"전자": 120000, "식품": 220000, "건설": 90000, "제약": 170000, "엔터테인": 200000}}, {"n": 16, "event": "경기 불황 경고! 현금과 위험관리가 중요해진다", "prices": {"전자": 100000, "식품": 190000, "건설": 90000, "제약": 160000, "엔터테인": 170000}}];
+const MISSIONS=[{"after": 2, "q": "주식 가격이 10만원에서 13만원이 되었다면 1주당 이익은?", "opts": ["1만원", "3만원", "13만원"], "ans": 1, "ex": "13만원 - 10만원 = 3만원. 이것이 '시세차익'의 기본이에요."}, {"after": 4, "q": "한 종목에 전부 투자하지 않고 여러 종목으로 나누는 전략은?", "opts": ["분산투자", "충동구매", "고정지출"], "ans": 0, "ex": "분산투자는 한 곳에 위험이 몰리는 것을 줄이는 방법이에요."}, {"after": 6, "q": "주식은 수익이 날 수도 있지만 손실도 날 수 있어요. 가장 알맞은 말은?", "opts": ["수익만 있다", "위험과 수익이 함께 있다", "가격은 항상 같다"], "ans": 1, "ex": "주식은 가격이 오르기도 하고 내리기도 해요. 높은 수익 가능성과 위험이 함께 있습니다."}, {"after": 8, "q": "돈의 흐름을 가장 잘 나타낸 것은?", "opts": ["소득 → 소비·저축·투자", "소비 → 월급 → 세금", "투자 → 용돈 → 소득"], "ans": 0, "ex": "벌어들인 소득은 소비하고, 저축하거나 투자하는 데 사용됩니다."}];
+let mode=8, tradeTime=25, soundOn=true;
+let player="", cash=1000000, holdings={}, currentIndex=0, targetEnd=8;
+let timerId=null, timeLeft=25, tokens=2, trades=0, quizScore=0, maxConcentration=0;
+let roundPnls=[], contributions={}, bankruptCleared=false;
+STOCKS.forEach(s=>{holdings[s]=0;contributions[s]=0});
+
+function won(n){return "₩"+Math.round(n).toLocaleString("ko-KR")}
+function signed(n){return (n>0?"+":"")+Math.round(n).toLocaleString("ko-KR")+"원"}
+function setMode(n){mode=n;document.getElementById("mode8").classList.toggle("active",n===8);document.getElementById("mode15").classList.toggle("active",n===15)}
+function setTime(n){tradeTime=n;document.getElementById("t25").classList.toggle("active",n===25);document.getElementById("t35").classList.toggle("active",n===35)}
+function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo(0,0)}
+function currentCard(){return CARDS[currentIndex]}
+function nextCard(){return CARDS[currentIndex+1]}
+function marketValue(card=currentCard()) {
+  let v=cash;
+  STOCKS.forEach(s=>{let p=card.prices[s]; if(p!=null) v+=holdings[s]*p;});
+  return v;
+}
+function startGame(){
+  unlockAudio(); startChime();
+  player=(document.getElementById("nickname").value.trim()||"익명 투자자").slice(0,12);
+  cash=1000000; currentIndex=0; targetEnd=(mode===8?8:15); tokens=2; trades=0; quizScore=0; maxConcentration=0; roundPnls=[];bankruptCleared=false;
+  STOCKS.forEach(s=>{holdings[s]=0;contributions[s]=0});
+  show("play"); renderPlay(); startTimer();
+}
+function renderPlay(){
+  const c=currentCard();
+  document.getElementById("roundStat").textContent=`${currentIndex+1} / ${targetEnd}`;
+  document.getElementById("cashStat").textContent=won(cash);
+  document.getElementById("assetStat").textContent=won(marketValue(c));
+  document.getElementById("eventTitle").textContent=c.event;
+  document.getElementById("tokenCount").textContent=tokens;
+  document.getElementById("tokenBtn").disabled=tokens<=0;
+  const m=document.getElementById("market"); m.innerHTML="";
+  STOCKS.forEach(s=>{
+    const p=c.prices[s], q=holdings[s];
+    const div=document.createElement("div"); div.className="stock";
+    let next=nextCard()?nextCard().prices[s]:p;
+    let ch=(p!=null&&next!=null)?next-p:null;
+    div.innerHTML=`<div class="stockHead"><div><div class="stockName">${s}</div><div class="hold">보유 ${q}주</div></div>
+      <div style="text-align:right"><div class="price">${p==null?"거래불가":won(p)}</div><div id="hint_${s}" class="change flat">분석 전</div></div></div>
+      <div class="trade"><button class="sell" onclick="sell('${s}')" ${q<=0||p==null?"disabled":""}>− 1주 매도</button>
+      <div class="qty">${q}주</div><button class="buy" onclick="buy('${s}')" ${p==null||cash<p?"disabled":""}>+ 1주 매수</button></div>
+      <div class="cashHint">${p==null?"현재 시장카드에서는 거래할 수 없습니다.":`1주 거래금액 ${won(p)}`}</div>`;
+    m.appendChild(div);
+  });
+  calcConcentration();
+}
+function buy(s){
+  const p=currentCard().prices[s]; if(p==null||cash<p)return;
+  cash-=p; holdings[s]++; trades++; clickSound(660); renderPlay();
+}
+function sell(s){
+  const p=currentCard().prices[s]; if(p==null||holdings[s]<=0)return;
+  cash+=p; holdings[s]--; trades++; clickSound(420); renderPlay();
+}
+function calcConcentration(){
+  const c=currentCard(); let invested=0, maxv=0;
+  STOCKS.forEach(s=>{let p=c.prices[s];let v=(p||0)*holdings[s];invested+=v;maxv=Math.max(maxv,v)});
+  if(invested>0) maxConcentration=Math.max(maxConcentration,maxv/invested);
+}
+function startTimer(){
+  clearInterval(timerId); timeLeft=tradeTime;
+  document.getElementById("timer").textContent=timeLeft;
+  document.getElementById("timerBar").style.width="100%";
+  document.getElementById("commitBtn").disabled=false;
+  timerId=setInterval(()=>{
+    timeLeft--; document.getElementById("timer").textContent=timeLeft;
+    document.getElementById("timerBar").style.width=Math.max(0,timeLeft/tradeTime*100)+"%";
+    if(timeLeft<=5&&timeLeft>0) tickSound(timeLeft);
+    if(timeLeft<=0){clearInterval(timerId);document.getElementById("commitBtn").disabled=true;setTimeout(commitRound,300)}
+  },1000);
+}
+function useToken(){
+  if(tokens<=0||!nextCard())return;
+  const candidates=STOCKS.filter(s=>currentCard().prices[s]!=null);
+  const unseen=candidates.filter(s=>document.getElementById("hint_"+s)?.dataset.seen!=="1");
+  const s=(unseen.length?unseen:candidates)[Math.floor(Math.random()*(unseen.length?unseen.length:candidates.length))];
+  const cur=currentCard().prices[s], nxt=nextCard().prices[s];
+  let txt,cls;
+  if(nxt==null){txt="⚠ 상장폐지 위험";cls="down"}
+  else if(nxt>cur){txt="▲ 다음 방향: 상승";cls="up"}
+  else if(nxt<cur){txt="▼ 다음 방향: 하락";cls="down"}
+  else{txt="― 다음 방향: 보합";cls="flat"}
+  const el=document.getElementById("hint_"+s);el.textContent=txt;el.className="change "+cls;el.dataset.seen="1";
+  tokens--;document.getElementById("tokenCount").textContent=tokens;document.getElementById("tokenBtn").disabled=tokens<=0;clickSound(820);
+}
+function commitRound(){
+  if(document.getElementById("play").classList.contains("active")===false)return;
+  marketBell();
+  clearInterval(timerId);
+  const c=currentCard(), n=nextCard(); if(!n){finishGame();return}
+  const before=marketValue(c);
+  let special="";
+  let cards=[];
+  STOCKS.forEach(s=>{
+    const cur=c.prices[s], nxt=n.prices[s], q=holdings[s];
+    let diff=0;
+    if(cur!=null && nxt!=null) diff=(nxt-cur)*q;
+    else if(cur!=null && nxt==null && q>0){diff=-(cur*q); contributions[s]+=diff; holdings[s]=0; special+=`⚠ ${s} 업종 상장폐지: 보유 주식 가치가 0원이 되었습니다. `; bankruptCleared=true;}
+    else if(cur==null && nxt!=null) special+=`🔁 ${s} 업종에 새 회사가 편입되어 다시 거래가 시작됩니다. `;
+    if(!(cur!=null && nxt==null && q>0)) contributions[s]+=diff;
+    cards.push({s,cur,nxt,q,diff});
+  });
+  const after=cash+STOCKS.reduce((sum,s)=>sum+holdings[s]*(n.prices[s]||0),0);
+  const pnl=after-before;roundPnls.push(pnl);
+  document.getElementById("revealEvent").textContent=n.event;
+  const bp=document.getElementById("bigPnl");bp.textContent=`이번 라운드 ${signed(pnl)}`;bp.className="bigPnl "+(pnl>=0?"good":"bad");
+  const rg=document.getElementById("revealGrid");rg.innerHTML="";
+  cards.forEach(x=>{
+    const d=document.createElement("div");d.className="resultCard";
+    let move="―",cls="flat";
+    if(x.nxt==null){move="상장폐지";cls="down"} else if(x.cur==null){move="재상장";cls="up"} else if(x.nxt>x.cur){move="▲ "+won(x.nxt-x.cur);cls="up"} else if(x.nxt<x.cur){move="▼ "+won(x.cur-x.nxt);cls="down"}
+    d.innerHTML=`<div class="name">${x.s} <span class="${cls}">${move}</span></div>
+      <div class="nums">${x.cur==null?"거래불가":won(x.cur)} → ${x.nxt==null?"0원":won(x.nxt)}<br>보유 ${x.q}주</div>
+      <div class="pnl ${x.diff>=0?"up":"down"}">${x.q? signed(x.diff):"보유 없음"}</div>`;
+    rg.appendChild(d);
+  });
+  document.getElementById("afterAsset").textContent=won(after);
+  const cum=after-1000000;document.getElementById("cumPnl").textContent=signed(cum);
+  document.getElementById("returnPct").textContent=(cum/1000000*100).toFixed(1)+"%";
+  document.getElementById("specialMsg").textContent=special;
+  currentIndex++; show("reveal"); resultSound(pnl>=0);
+}
+function afterReveal(){
+  const roundDone=currentIndex;
+  const m=MISSIONS.find(x=>x.after===roundDone);
+  if(m && mode===8){showMission(m);return}
+  if(currentIndex>=targetEnd){finishGame();return}
+  show("play");transitionChime();renderPlay();startTimer();
+}
+let activeMission=null;
+function showMission(m){
+  activeMission=m;show("mission");document.getElementById("missionQ").textContent=m.q;
+  const opts=document.getElementById("missionOpts");opts.innerHTML="";document.getElementById("missionEx").textContent="";document.getElementById("missionNext").style.display="none";
+  m.opts.forEach((o,i)=>{const b=document.createElement("button");b.className="opt";b.textContent=o;b.onclick=()=>answerMission(b,i);opts.appendChild(b)})
+}
+function answerMission(btn,i){
+  document.querySelectorAll(".opt").forEach(x=>x.disabled=true);
+  if(i===activeMission.ans){btn.classList.add("correct");quizScore++;document.getElementById("missionEx").textContent="정답! "+activeMission.ex;resultSound(true)}
+  else{btn.classList.add("wrong");document.querySelectorAll(".opt")[activeMission.ans].classList.add("correct");document.getElementById("missionEx").textContent="정답 확인: "+activeMission.ex;resultSound(false)}
+  document.getElementById("missionNext").style.display="block";
+}
+function missionDone(){
+  if(currentIndex>=targetEnd){finishGame();return} show("play");transitionChime();renderPlay();startTimer();
+}
+function investmentStyle(){
+  if(maxConcentration>=.7)return "🔥 한방 집중형";
+  const finalAsset=marketValue(currentCard());
+  const cashRatio=cash/finalAsset;
+  if(cashRatio>=.45)return "🛡 현금 방어형";
+  if(maxConcentration<=.45)return "🌈 분산 균형형";
+  return "⚖ 균형 투자형";
+}
+function resultText(){
+  const asset=marketValue(currentCard()),pnl=asset-1000000,ret=(pnl/1000000*100).toFixed(1);
+  return `[경제마스터스 LIVE] ${player}\n최종자산: ${won(asset)}\n총손익: ${signed(pnl)} (${ret}%)\n투자스타일: ${investmentStyle()}\n경제미션: ${quizScore}개 정답\n한 줄 소감: __________________`;
+}
+function finishGame(){
+  clearInterval(timerId);show("final");
+  const asset=marketValue(currentCard()),pnl=asset-1000000,ret=(pnl/1000000*100).toFixed(1);
+  document.getElementById("finalName").textContent=player+" 투자 생존 완료!";
+  document.getElementById("finalAsset").textContent=won(asset);
+  document.getElementById("finalPnl").innerHTML=`총손익 <b class="${pnl>=0?"up":"down"}">${signed(pnl)} (${ret}%)</b>`;
+  document.getElementById("styleBadge").textContent=investmentStyle();
+  document.getElementById("sumReturn").textContent=ret+"%";
+  document.getElementById("sumQuiz").textContent=quizScore+" / "+(mode===8?4:0);
+  document.getElementById("sumConcentration").textContent=Math.round(maxConcentration*100)+"%";
+  document.getElementById("sumTrades").textContent=trades+"회";
+  fanfare();
+}
+function copyResult(){
+  navigator.clipboard?.writeText(resultText()).then(()=>alert("결과 문구를 복사했어요. 패들렛 글에 붙여넣으세요!")).catch(()=>prompt("아래 문구를 복사하세요.",resultText()));
+}
+function shareResult(){
+  const t=resultText();
+  if(navigator.share) navigator.share({title:"경제마스터스 LIVE 결과",text:t}).catch(()=>{});
+  else copyResult();
+}
+function downloadCard(){
+  const c=document.getElementById("resultCanvas"),ctx=c.getContext("2d");const asset=marketValue(currentCard()),pnl=asset-1000000,ret=(pnl/1000000*100).toFixed(1);
+  const g=ctx.createLinearGradient(0,0,1080,1350);g.addColorStop(0,"#0f172a");g.addColorStop(1,"#172554");ctx.fillStyle=g;ctx.fillRect(0,0,1080,1350);
+  ctx.fillStyle="#ffffff";ctx.textAlign="center";ctx.font="bold 58px sans-serif";ctx.fillText("경제마스터스 LIVE",540,120);
+  ctx.font="bold 44px sans-serif";ctx.fillStyle="#9cc4ff";ctx.fillText("100만원 투자 생존게임",540,190);
+  ctx.font="bold 52px sans-serif";ctx.fillStyle="#ffffff";ctx.fillText(player,540,310);
+  ctx.font="bold 86px sans-serif";ctx.fillStyle="#ffe169";ctx.fillText(won(asset),540,470);
+  ctx.font="bold 40px sans-serif";ctx.fillStyle=pnl>=0?"#58e5ae":"#ff8da0";ctx.fillText(`총손익 ${signed(pnl)} (${ret}%)`,540,545);
+  ctx.fillStyle="#ffffff";ctx.font="bold 44px sans-serif";ctx.fillText(investmentStyle(),540,685);
+  ctx.font="36px sans-serif";ctx.fillStyle="#cdd9eb";ctx.fillText(`경제미션 ${quizScore}개 정답 · 거래 ${trades}회`,540,780);
+  ctx.fillText(`최대 집중도 ${Math.round(maxConcentration*100)}%`,540,840);
+  ctx.fillStyle="#26395f";ctx.fillRect(120,920,840,240);
+  ctx.fillStyle="#ffffff";ctx.font="bold 34px sans-serif";ctx.fillText("💬 내 투자에서 가장 잘한 선택 또는",540,995);ctx.fillText("아쉬운 선택은 무엇이었나요?",540,1045);
+  ctx.font="30px sans-serif";ctx.fillStyle="#b8c6d9";ctx.fillText("패들렛에 한 문장으로 적어보세요.",540,1110);
+  ctx.font="26px sans-serif";ctx.fillStyle="#8595ad";ctx.fillText("교육용 가상시장 · 실제 투자와 무관",540,1260);
+  const a=document.createElement("a");a.download=`경제마스터스_${player}_결과.png`;a.href=c.toDataURL("image/png");a.click();
+}
+function restart(){location.reload()}
+function openHelp(){document.getElementById("helpModal").classList.add("show")}
+function closeHelp(){document.getElementById("helpModal").classList.remove("show")}
+
+let audioCtx=null;
+let masterGain=null;
+
+function unlockAudio(){
+  if(!soundOn) return;
+  try{
+    if(!audioCtx){
+      audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+      masterGain=audioCtx.createGain();
+      masterGain.gain.value=.78;
+      masterGain.connect(audioCtx.destination);
+    }
+    if(audioCtx.state==="suspended") audioCtx.resume();
+  }catch(e){}
+}
+
+document.addEventListener("pointerdown",unlockAudio,{passive:true});
+document.addEventListener("touchstart",unlockAudio,{passive:true});
+
+function toggleSound(){
+  soundOn=!soundOn;
+  const b=document.getElementById("soundToggle");
+  if(b) b.textContent=soundOn?"🔊 ON":"🔇 OFF";
+  if(soundOn){ unlockAudio(); testSound(); }
+}
+
+function tone(freq,dur=120,vol=.08,start=0,type="sine"){
+  if(!soundOn) return;
+  unlockAudio();
+  if(!audioCtx||!masterGain) return;
+  try{
+    const t=audioCtx.currentTime+start;
+    const o=audioCtx.createOscillator();
+    const g=audioCtx.createGain();
+    o.type=type;
+    o.frequency.setValueAtTime(freq,t);
+    g.gain.setValueAtTime(.0001,t);
+    g.gain.exponentialRampToValueAtTime(Math.max(.001,vol),t+.01);
+    g.gain.exponentialRampToValueAtTime(.0001,t+dur/1000);
+    o.connect(g); g.connect(masterGain);
+    o.start(t); o.stop(t+dur/1000+.03);
+  }catch(e){}
+}
+
+function noiseBurst(dur=90,vol=.035,start=0){
+  if(!soundOn) return;
+  unlockAudio();
+  if(!audioCtx||!masterGain) return;
+  try{
+    const len=Math.max(1,Math.floor(audioCtx.sampleRate*dur/1000));
+    const buf=audioCtx.createBuffer(1,len,audioCtx.sampleRate);
+    const data=buf.getChannelData(0);
+    for(let i=0;i<len;i++) data[i]=(Math.random()*2-1)*(1-i/len);
+    const src=audioCtx.createBufferSource();
+    const g=audioCtx.createGain();
+    g.gain.value=vol;
+    src.buffer=buf; src.connect(g); g.connect(masterGain);
+    src.start(audioCtx.currentTime+start);
+  }catch(e){}
+}
+
+function startChime(){
+  tone(523,120,.055,0,"triangle");
+  tone(659,120,.055,.12,"triangle");
+  tone(784,210,.07,.24,"triangle");
+}
+
+function clickSound(f=660){
+  tone(f,80,.045,0,"square");
+}
+
+function tickSound(n=5){
+  const freqs={5:520,4:580,3:650,2:730,1:880};
+  tone(freqs[n]||700,70,.05,0,"square");
+  if(n===1) tone(1040,110,.06,.08,"square");
+}
+
+function marketBell(){
+  tone(988,90,.07,0,"sine");
+  tone(784,130,.06,.10,"sine");
+  noiseBurst(70,.02,.02);
+}
+
+function transitionChime(){
+  tone(440,80,.035,0,"triangle");
+  tone(554,100,.04,.09,"triangle");
+}
+
+function resultSound(good){
+  if(good){
+    tone(523,100,.055,0,"triangle");
+    tone(659,100,.06,.11,"triangle");
+    tone(784,180,.07,.22,"triangle");
+  }else{
+    tone(330,150,.045,0,"sawtooth");
+    tone(247,220,.04,.14,"sawtooth");
+  }
+}
+
+function fanfare(){
+  [523,659,784,1046].forEach((f,i)=>tone(f,240,.07,i*.16,"triangle"));
+  setTimeout(()=>noiseBurst(240,.025,0),120);
+}
+
+function testSound(){
+  unlockAudio();
+  startChime();
+  setTimeout(()=>marketBell(),420);
+}
+
+</script>
+</body>
+</html>
