@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="생성형 AI, AI 원리, Vibe Coding, Python을 눈높이에 맞춰 직접 만들어보는 프로젝트형 AI 교육">
+<title>AI 교육 강사 | 생각을 코드로, 상상을 현실로!</title>
+<style>
+:root{
+  --navy:#0b2545; --blue:#1d6fdc; --cyan:#18a6a6; --sky:#eef7ff;
+  --ink:#152238; --muted:#637083; --line:#dfe8f2; --white:#fff;
+  --shadow:0 18px 50px rgba(15,43,77,.10); --radius:24px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;background:#fff}
+a{text-decoration:none;color:inherit}
+.container{width:min(1120px,calc(100% - 40px));margin:auto}
+header{position:fixed;top:0;left:0;right:0;z-index:20;background:rgba(255,255,255,.88);backdrop-filter:blur(14px);border-bottom:1px solid rgba(223,232,242,.7)}
+.nav{height:76px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:900;letter-spacing:-.04em;color:var(--navy);font-size:20px}
+.logo span{color:var(--blue)}
+.navlinks{display:flex;gap:28px;font-size:14px;font-weight:700;color:#42516a}
+.navlinks a:hover{color:var(--blue)}
+.nav-cta{padding:10px 18px;background:var(--navy);color:#fff;border-radius:999px;font-weight:800;font-size:14px}
+.menu{display:none;border:0;background:none;font-size:26px}
+
+.hero{padding:150px 0 90px;background:
+ radial-gradient(circle at 85% 18%,rgba(29,111,220,.14),transparent 28%),
+ radial-gradient(circle at 10% 30%,rgba(24,166,166,.10),transparent 24%),
+ linear-gradient(180deg,#f8fbff,#fff)}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:#eaf4ff;color:#1764bd;font-size:13px;font-weight:800;margin-bottom:20px}
+.eyebrow:before{content:"";width:7px;height:7px;background:var(--cyan);border-radius:50%}
+h1{font-size:clamp(42px,6vw,76px);line-height:1.08;letter-spacing:-.065em;margin:0 0 22px;color:var(--navy)}
+.hero h1 em{font-style:normal;color:var(--blue)}
+.hero-lead{font-size:22px;font-weight:800;letter-spacing:-.03em;margin:0 0 12px}
+.hero-copy{font-size:17px;color:var(--muted);max-width:650px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0}
+.tag{padding:8px 13px;border:1px solid #cfe0f3;border-radius:999px;background:#fff;font-size:13px;font-weight:800;color:#35516e}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 22px;border-radius:14px;font-weight:900}
+.btn-primary{background:var(--navy);color:#fff;box-shadow:0 10px 25px rgba(11,37,69,.18)}
+.btn-secondary{background:#fff;border:1px solid var(--line);color:var(--navy)}
+.hero-card{position:relative}
+.portrait{min-height:470px;border-radius:34px;background:linear-gradient(145deg,#dff7f5,#e9f1ff);border:1px solid #d3e3ef;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.portrait .orb{position:absolute;width:300px;height:300px;border-radius:50%;background:linear-gradient(145deg,rgba(29,111,220,.22),rgba(24,166,166,.18));top:-70px;right:-70px}
+.portrait .placeholder{width:220px;height:300px;border-radius:120px 120px 40px 40px;background:linear-gradient(180deg,#fff,#cbdbea);display:flex;align-items:center;justify-content:center;color:#6b7c90;text-align:center;font-size:14px;font-weight:800;padding:25px;position:relative;z-index:1}
+.floating{position:absolute;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:18px;padding:14px 17px;font-size:13px;font-weight:800;z-index:2}
+.f1{left:-25px;bottom:70px}.f2{right:-22px;top:90px}.f3{right:25px;bottom:28px;color:var(--blue)}
+
+section{padding:105px 0}
+.section-head{max-width:700px;margin-bottom:42px}
+.kicker{font-size:13px;font-weight:900;color:var(--blue);letter-spacing:.08em;text-transform:uppercase}
+h2{font-size:clamp(32px,4vw,48px);line-height:1.15;letter-spacing:-.055em;margin:8px 0 15px;color:var(--navy)}
+.section-head p{color:var(--muted);font-size:17px;margin:0}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{padding:28px;border:1px solid var(--line);border-radius:var(--radius);background:#fff;box-shadow:0 10px 30px rgba(20,55,90,.05)}
+.card-icon{width:48px;height:48px;border-radius:15px;background:#edf6ff;color:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:900;margin-bottom:22px}
+.card h3{margin:0 0 8px;font-size:21px;letter-spacing:-.04em}
+.card p{margin:0;color:var(--muted);font-size:15px}
+
+.stats{background:var(--navy);color:#fff}
+.stats h2,.stats .section-head p{color:#fff}
+.stats .section-head p{opacity:.75}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{padding:30px 24px;border:1px solid rgba(255,255,255,.12);border-radius:20px;background:rgba(255,255,255,.05)}
+.stat strong{display:block;font-size:46px;letter-spacing:-.06em}
+.stat span{opacity:.78;font-size:14px}
+
+.expertise{background:#f7fbff}
+.expert-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.expert{padding:26px;border-radius:22px;background:#fff;border:1px solid var(--line);min-height:210px}
+.expert .num{font-size:12px;font-weight:900;color:var(--blue)}
+.expert h3{font-size:22px;margin:18px 0 8px}
+.expert p{color:var(--muted);font-size:14px;margin:0}
+
+.projects{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.project{min-height:420px;border-radius:28px;overflow:hidden;border:1px solid var(--line);background:#fff;position:relative;box-shadow:var(--shadow)}
+.project-visual{height:260px;background:linear-gradient(135deg,#e9f4ff,#e7faf8);position:relative;overflow:hidden}
+.project-visual:before{content:"";position:absolute;width:170px;height:170px;border-radius:50%;background:rgba(29,111,220,.18);top:30px;left:40px}
+.project-visual:after{content:"";position:absolute;width:250px;height:110px;border-radius:24px;background:rgba(255,255,255,.8);bottom:25px;right:25px;transform:rotate(-7deg)}
+.mock-window{position:absolute;z-index:1;width:70%;height:150px;left:15%;top:55px;border-radius:16px;background:#fff;border:1px solid #d9e7f4;box-shadow:0 15px 30px rgba(20,55,90,.10);padding:16px}
+.mock-bar{height:9px;width:50%;background:#d9e7f4;border-radius:20px;margin-bottom:14px}
+.mock-lines{display:grid;gap:9px}.mock-lines i{display:block;height:10px;background:#edf3f8;border-radius:20px}.mock-lines i:nth-child(2){width:75%}.mock-lines i:nth-child(3){width:45%}
+.project-body{padding:26px}.project-body h3{margin:0 0 8px;font-size:25px}.project-body p{margin:0;color:var(--muted)}
+
+.targets{background:#fbfcfe}
+.target-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.target{padding:30px;border-radius:24px;background:#fff;border:1px solid var(--line)}
+.target .label{display:inline-block;padding:6px 10px;background:#eef7ff;color:var(--blue);font-size:12px;font-weight:900;border-radius:999px}
+.target h3{font-size:25px;margin:18px 0 8px}.target p{color:var(--muted);margin:0}
+
+.about-grid{display:grid;grid-template-columns:.75fr 1.25fr;gap:60px;align-items:center}
+.about-photo{height:440px;border-radius:30px;background:linear-gradient(145deg,#e5f6f4,#edf4ff);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:#6b7c90;font-weight:800;text-align:center;padding:30px}
+.about-copy h2{margin-top:5px}.about-copy p{color:var(--muted)}
+.pill-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.pill{padding:8px 12px;border-radius:999px;background:#f2f6fa;font-size:13px;font-weight:800}
+
+.inquiry{background:linear-gradient(135deg,#edf7ff,#ecfbf8)}
+.inquiry-box{display:grid;grid-template-columns:.85fr 1.15fr;gap:40px;align-items:start}
+.form{background:#fff;border:1px solid var(--line);border-radius:26px;padding:30px;box-shadow:var(--shadow)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}
+label{font-size:13px;font-weight:900}.field input,.field select,.field textarea{font:inherit;border:1px solid #d8e2ec;border-radius:12px;padding:12px 13px;outline:none;background:#fff}.field textarea{min-height:130px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,111,220,.10)}
+.form button{border:0;cursor:pointer;width:100%;margin-top:16px}
+.note{font-size:12px;color:#7b8796;margin-top:10px}
+
+footer{padding:35px 0;background:#081d37;color:#fff}
+.footer{display:flex;justify-content:space-between;gap:20px;align-items:center}.footer small{opacity:.65}
+
+
+.profile-img{width:100%;height:100%;object-fit:cover;object-position:center top;position:relative;z-index:1}
+.about-photo{overflow:hidden;padding:0}
+.about-img{width:100%;height:100%;object-fit:cover;object-position:center top}
+
+@media(max-width:900px){
+ .navlinks{display:none}.menu{display:block}
+ .hero-grid,.about-grid,.inquiry-box{grid-template-columns:1fr}
+ .hero{padding-top:125px}.portrait{min-height:360px}
+ .grid3,.target-grid{grid-template-columns:1fr}
+ .expert-grid{grid-template-columns:1fr 1fr}.stat-grid{grid-template-columns:1fr 1fr}
+ .projects{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+ .container{width:min(100% - 28px,1120px)}
+ section{padding:75px 0}.hero{padding-bottom:65px}
+ h1{font-size:45px}.hero-lead{font-size:19px}
+ .expert-grid,.stat-grid,.form-grid{grid-template-columns:1fr}
+ .field.full{grid-column:auto}
+ .projects{gap:14px}.project{min-height:auto}
+ .portrait{min-height:330px}.floating{font-size:12px;padding:10px}.f1{left:10px}.f2{right:10px}
+ .footer{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <a class="logo" href="#top">AI <span>EDUCATOR</span></a>
+    <nav class="navlinks">
+      <a href="#why">강점</a>
+      <a href="#expertise">전문 분야</a>
+      <a href="#projects">프로젝트</a>
+      <a href="#targets">교육 대상</a>
+      <a href="#experience">교육 경험</a>
+      <a href="#contact">강의 문의</a>
+    </nav>
+    <a class="nav-cta" href="#contact">강의 섭외 문의</a>
+    <button class="menu" aria-label="메뉴">☰</button>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow">PROJECT-BASED AI EDUCATION</div>
+      <h1>생각을 코드로,<br><em>상상을 현실로!</em></h1>
+      <p class="hero-lead">AI를 어렵지 않게, 직접 만들어보는 교육</p>
+      <p class="hero-copy">생성형 AI부터 AI 원리, Vibe Coding, Python까지 교육 대상의 눈높이에 맞춘 프로젝트형 AI 교육을 제공합니다.</p>
+      <div class="tags">
+        <span class="tag">생성형 AI</span><span class="tag">AI</span><span class="tag">Vibe Coding</span><span class="tag">Python</span>
+      </div>
+      <div class="btns">
+        <a class="btn btn-primary" href="#contact">강의 섭외 문의</a>
+        <a class="btn btn-secondary" href="#projects">프로젝트 보기</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="portrait">
+        <div class="orb"></div>
+        <img class="profile-img" src="instructor-profile.png" alt="AI 교육 전문 강사 프로필 사진">
+        <div class="floating f1">눈높이에 맞춘 교육</div>
+        <div class="floating f2">AI · Vibe Coding</div>
+        <div class="floating f3">직접 만들어보는 수업</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="why">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">WHY THIS INSTRUCTOR</div>
+      <h2>왜 이 강사의 AI 교육일까요?</h2>
+      <p>기술을 설명하는 데서 끝나지 않고, 교육 대상이 직접 이해하고 만들어보는 경험으로 연결합니다.</p>
+    </div>
+    <div class="grid3">
+      <article class="card"><div class="card-icon">01</div><h3>눈높이에 맞춥니다</h3><p>어려운 AI 개념도 학습자의 수준과 관심사에 맞는 언어와 사례로 쉽게 설명합니다.</p></article>
+      <article class="card"><div class="card-icon">02</div><h3>직접 만들어봅니다</h3><p>이론 설명에 그치지 않고 실습과 프로젝트를 통해 AI를 직접 경험하게 합니다.</p></article>
+      <article class="card"><div class="card-icon">03</div><h3>결과물을 남깁니다</h3><p>AI 이미지와 웹 서비스 등 자신의 아이디어가 실제 결과물이 되는 성취감을 제공합니다.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="experience" class="stats">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">EXPERIENCE</div>
+      <h2>현장에서 쌓아온 교육 경험</h2>
+      <p>현재 확인된 출강 경험을 사실 그대로 보여줍니다.</p>
+    </div>
+    <div class="stat-grid">
+      <div class="stat"><strong>50+</strong><span>초등 교육</span></div>
+      <div class="stat"><strong>10+</strong><span>생성형 AI 교육</span></div>
+      <div class="stat"><strong>5+</strong><span>Vibe Coding 교육</span></div>
+      <div class="stat"><strong>2+</strong><span>Micro:bit 교육</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="expertise" class="expertise">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">EXPERTISE</div>
+      <h2>가르칠 수 있는 AI가 아니라,<br>활용하게 만드는 AI 교육</h2>
+      <p>핵심 전문 분야를 명확하게 보여주고, 추가 분야는 필요할 때 확장할 수 있도록 구성했습니다.</p>
+    </div>
+    <div class="expert-grid">
+      <article class="expert"><div class="num">01 / GENERATIVE AI</div><h3>생성형 AI</h3><p>생성형 AI의 이해부터 실제 활용까지, 직접 경험하는 교육</p></article>
+      <article class="expert"><div class="num">02 / AI</div><h3>AI</h3><p>AI 원리와 디지털·AI 리터러시를 눈높이에 맞춰 이해</p></article>
+      <article class="expert"><div class="num">03 / VIBE CODING</div><h3>Vibe Coding</h3><p>생성형 AI와 함께 웹과 서비스를 직접 제작</p></article>
+      <article class="expert"><div class="num">04 / PYTHON</div><h3>Python</h3><p>Python 기초부터 데이터 활용 프로젝트까지</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">PROJECTS</div>
+      <h2>배우고 끝나는 수업이 아니라,<br>직접 만들어봅니다.</h2>
+      <p>현재 확인된 대표 프로젝트를 중심으로 구성했습니다. 실제 결과물 이미지를 넣으면 신뢰도가 더욱 높아집니다.</p>
+    </div>
+    <div class="projects">
+      <article class="project">
+        <div class="project-visual">
+          <div class="mock-window"><div class="mock-bar"></div><div class="mock-lines"><i></i><i></i><i></i></div></div>
+        </div>
+        <div class="project-body"><h3>AI Image Project</h3><p>AI를 활용해 자신의 아이디어를 이미지로 표현하고, 결과물을 직접 만들어보는 프로젝트입니다.</p></div>
+      </article>
+      <article class="project">
+        <div class="project-visual">
+          <div class="mock-window"><div class="mock-bar"></div><div class="mock-lines"><i></i><i></i><i></i></div></div>
+        </div>
+        <div class="project-body"><h3>Vibe Coding Service</h3><p>생성형 AI와 함께 아이디어를 실제 작동하는 웹 서비스로 구현하는 프로젝트입니다.</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="targets" class="targets">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">EDUCATION TARGET</div>
+      <h2>교육 대상에 따라<br>수업을 다르게 설계합니다.</h2>
+      <p>같은 AI라도 대상과 목적에 따라 설명 방식과 프로젝트의 난이도를 달리합니다.</p>
+    </div>
+    <div class="target-grid">
+      <article class="target"><span class="label">초 · 중등</span><h3>재미있게 경험하는 AI</h3><p>AI와 코딩을 프로젝트로 경험하고, 자신의 아이디어를 직접 결과물로 만들어봅니다.</p></article>
+      <article class="target"><span class="label">성인</span><h3>활용할 수 있는 AI</h3><p>생성형 AI와 디지털 도구를 실제 생활과 업무에 연결해 활용합니다.</p></article>
+      <article class="target"><span class="label">시니어</span><h3>부담 없이 만나는 AI</h3><p>처음 접하는 AI도 쉽게 이해하고 직접 활용해보는 체험형 교육을 지향합니다.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container about-grid">
+    <div class="about-photo"><img class="about-img" src="instructor-profile.png" alt="AI 교육 전문 강사 프로필 사진"></div>
+    <div class="about-copy">
+      <div class="kicker">ABOUT INSTRUCTOR</div>
+      <h2>기술보다 중요한 것은,<br>이해시키는 방법입니다.</h2>
+      <p>단순한 기능 전달을 넘어 학습자가 직접 만들고 문제를 해결하는 즐거움을 경험하도록 돕는 디지털·AI 교육 전문 강사입니다.</p>
+      <p>AI 알고리즘, 생성형 AI, Python, Vibe Coding 등 다양한 주제를 교육 대상의 눈높이에 맞춰 프로젝트 중심으로 재구성합니다.</p>
+      <div class="pill-list"><span class="pill">AI 교육</span><span class="pill">생성형 AI</span><span class="pill">Vibe Coding</span><span class="pill">Python</span><span class="pill">프로젝트형 수업</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="inquiry">
+  <div class="container inquiry-box">
+    <div>
+      <div class="kicker">LECTURE INQUIRY</div>
+      <h2>우리 기관의 AI 교육,<br>어떻게 시작하면 좋을까요?</h2>
+      <p style="color:var(--muted);font-size:17px">교육 대상과 목적을 알려주시면 대상과 수준에 맞는 프로그램을 함께 제안해드립니다.</p>
+      <div class="card" style="margin-top:24px">
+        <h3 style="margin-top:0">강의 섭외 문의</h3>
+        <p>교육청 · 학교 · 도서관 · 공공기관 · 시니어 교육기관 등 기관의 목적과 대상에 맞춰 상담할 수 있습니다.</p>
+      </div>
+    </div>
+    <form class="form" id="inquiryForm">
+      <div class="form-grid">
+        <div class="field"><label>기관명 *</label><input required placeholder="기관명을 입력해주세요"></div>
+        <div class="field"><label>담당자명 *</label><input required placeholder="담당자명"></div>
+        <div class="field"><label>연락처 *</label><input required type="tel" placeholder="010-0000-0000"></div>
+        <div class="field"><label>이메일</label><input type="email" placeholder="example@email.com"></div>
+        <div class="field"><label>교육 대상</label><select><option>선택해주세요</option><option>초등</option><option>중등</option><option>성인</option><option>시니어</option><option>기타</option></select></div>
+        <div class="field"><label>예상 인원</label><input placeholder="예: 20명"></div>
+        <div class="field full"><label>희망 교육 주제</label><input placeholder="예: 생성형 AI, Vibe Coding, Python 등"></div>
+        <div class="field full"><label>희망 일정</label><input placeholder="예: 2026년 10월 중"></div>
+        <div class="field full"><label>문의 내용</label><textarea placeholder="교육 목적, 대상, 일정 등 편하게 작성해주세요."></textarea></div>
+      </div>
+      <button class="btn btn-primary" type="submit">강의 섭외 문의 보내기</button>
+      <div class="note">※ 현재 데모 버전에서는 실제 전송 기능 대신 문의 접수 안내가 표시됩니다. 이메일/폼 연동 후 실서비스로 사용할 수 있습니다.</div>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container footer">
+    <div><strong>AI EDUCATOR</strong><br><small>생각을 코드로, 상상을 현실로!</small></div>
+    <small>© 2026 AI Education Instructor. All rights reserved.</small>
+  </div>
+</footer>
+
+<script>
+document.getElementById('inquiryForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  alert('문의 내용이 준비되었습니다.\\n\\n실서비스에서는 이 폼을 이메일, Google Forms, Formspree, 서버 API 등에 연결하면 됩니다.');
+});
+</script>
+</body>
+</html>
